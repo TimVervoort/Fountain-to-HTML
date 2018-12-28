@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>Fountain to HTML</title>
+        <link href="css/viewer.css" type="text/css" rel="stylesheet" />
+        <link href="css/styles.css" type="text/css" rel="stylesheet" />
+
+    </head>
+    <body>
+
+        <div id="editor">
+            <textarea id="fountain"></textarea>
+        </div>
+        <div id="viewer">
+            <ul id="scenario"></ul>
+        </div>
+
+        <script type="text/javascript" src="js/display.js"></script>
+        <script type="text/javascript" src="js/parser.js"></script>
+        <script type="text/javascript">
+            function readFile(file) {
+                var f = new XMLHttpRequest();
+                f.open('GET', file, false);
+                f.onreadystatechange = function() {
+                    if (f.readyState === 4 && (f.status === 200 || f.status == 0)) {
+                        var c = f.responseText;
+                        document.getElementById('fountain').value = c;
+                        parseFountain();
+                    }
+                }
+                f.send(null);
+            }
+            readFile('example.fountain');
+        </script>
+
+    </body>
+</html>

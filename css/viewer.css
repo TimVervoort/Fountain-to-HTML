@@ -1,0 +1,192 @@
+/* Generic styles */
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: #ddd;
+    font-family: 'Courier', Courier, monospace, sans-serif;
+    font-size: 12pt;
+    line-height: 1.09;
+    font-weight: normal;
+    text-align: left;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+*, *:focus *:active, *:hover {
+    outline: none;
+}
+a {
+    color: #000;
+    text-decoration: none;
+}
+html {
+    scroll-behavior: smooth;
+}
+
+/* Editor components */
+.paper {
+    background-color: #fff;
+    margin: 50px auto;
+    overflow: hidden;
+    display: block;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+.paper:first-of-type {
+    margin: 0 auto 50px auto;
+}
+.paper:last-of-type {
+    margin: 50px auto 0 auto;
+}
+.paper .page-nr {
+    position: absolute;
+    top: 1.27cm;
+    right: 2.54cm;
+    text-align: right;
+}
+.a4-portrait {
+    height: 29.7cm;
+    width: 21cm;
+    padding-bottom: 1.27cm; /* bottom margin between 0.5 and 1 inch */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+@media print {
+    .paper, .paper:first-of-type, .paper:last-of-type, .a4-portrait {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+    .a4-portrait:last-of-type {
+        height: auto;
+    }
+}
+span {
+    display: block;
+    clear: both;
+    margin-bottom: 17px;
+    transition: all 0.3s;
+}
+.heading {
+    margin-left: calc(1.5 * 2.54cm);
+    margin-right: calc(1 * 2.54cm);
+    width: calc(6 * 2.54cm);
+}
+.action {
+    margin-left: calc(1.5 * 2.54cm);
+    margin-right: calc(1 * 2.54cm);
+    width: calc(6 * 2.54cm);
+}
+.dialog {
+    margin-left: calc(2.9 * 2.54cm);
+    margin-right: calc(2.3 * 2.54cm);
+    width: calc(3.3 * 2.54cm);
+}
+.character-cue {
+    margin-left: calc(4.2 * 2.54cm);
+    margin-right: calc(1 * 2.54cm);
+    width: calc(3.3 * 2.54cm);
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+.parenthetical {
+    margin-left: calc(3.6 * 2.54cm);
+    margin-right: calc(2.9 * 2.54cm);
+    width: calc(2 * 2.54cm);
+}
+.transition {
+    text-align: right;
+    margin-right: calc(1 * 2.54cm);
+    width: calc(100% - 1 * 2.54cm);
+}
+.script-title {
+    text-transform: uppercase;
+    text-align: center;
+}
+.credit, .author {
+    text-align: center;
+}
+.contact {
+    position: absolute;
+    bottom: 2.54cm;
+    left: calc(1.5 * 2.54cm);
+}
+.first-title {
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-align: center;
+}
+.fade-in {
+    width: calc(100% - 2.54cm);
+    margin-left: calc(1.5 * 2.54cm);
+}
+.fade-out, .end-montage {
+    text-align: right;
+    text-transform: uppercase;
+    margin-left: calc(1.5 * 2.54cm);
+    margin-right: 2.54cm;
+    width: calc(100% - 2.5 * 2.54cm);
+}
+.end {
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: underline;
+}
+span {
+    display: block;
+    width: 100%;
+    transition: 0.3s linear;
+}
+.lines-2 {
+    height: calc(1 * 17px);
+}
+.lines-25 {
+    height: calc(24 * 17px);
+}
+.lines-7 {
+    height: calc(6 * 17px);
+}
+
+/* Print document */
+@media screen and (max-width: 811px) {
+    @page { margin: 0cm 0cm 0cm 0cm; } /* When kiosk mode is enabled in Chrome */
+    .paper, .paper:first-of-type, .paper:last-of-type, .a4-portrait {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+    .heading, .action, .transition, .end-montage  {
+        margin-left: 10px;
+        margin-right: 10px;
+        width: calc(100% - 20px);
+    }
+    .dialog {
+        margin-left: 30px;;
+        margin-right: 10px;
+        width: calc(100% - 40px);
+    }
+    .character-cue {
+        margin-left: 40px;
+        margin-right: 10px;
+        width: calc(100% - 50px);
+    }
+}
+
+/* Text styling */
+.center {
+    clear: both;
+    text-align: center;
+}
+.underline {
+    display: contents;
+    text-decoration: underline;
+}
+.italic {
+    display: contents;
+    font-style: italic;
+}
+.bold {
+    display: contents;
+    font-weight: bold;
+}
