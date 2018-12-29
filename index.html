@@ -18,20 +18,24 @@
 
         <script type="text/javascript" src="js/display.js"></script>
         <script type="text/javascript" src="js/parser.js"></script>
+        <script type="text/javascript" src="js/screenplay.js"></script>
         <script type="text/javascript">
-            function readFile(file) {
-                var f = new XMLHttpRequest();
-                f.open('GET', file, false);
-                f.onreadystatechange = function() {
-                    if (f.readyState === 4 && (f.status === 200 || f.status == 0)) {
-                        var c = f.responseText;
-                        document.getElementById('fountain').value = c;
-                        parseFountain();
-                    }
-                }
-                f.send(null);
-            }
-            readFile('example.fountain');
+            //function readFile(file) {
+            //    var f = new XMLHttpRequest();
+            //    f.open('GET', file, false);
+            //    f.onreadystatechange = function() {
+            //        if (f.readyState === 4 && (f.status === 200 || f.status == 0)) {
+            //            var c = f.responseText;
+            //            document.getElementById('fountain').value = c;
+            //            var p = new FountainParser('fountain').parseFountain();
+            //        }
+            //    }
+            //    f.send(null);
+            //}
+            //readFile('example.fountain');
+            var p = new FountainParser('fountain');
+            var sp = new Screenplay('fountain', p);
+            p.parseFountain();
         </script>
 
     </body>

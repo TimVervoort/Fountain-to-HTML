@@ -15,9 +15,8 @@ function isPageFull(pageNr) {
  * Remove all blocks from the script and place the placeholders.
  */
 function clearScript() {
-    var flyPage = document.getElementById('scenario').children[0].outerHTML;
-    document.getElementById('scenario').innerHTML = flyPage;
-    newPage();
+    document.getElementById('scenario').innerHTML = '';
+    createTitlePage('Title page', 'Written by', 'You', '', ''); // There must be an empty page
 }
 
 /**
@@ -38,18 +37,18 @@ function addBlock(type, content = '', focused = false) {
         content = 'SC' + parseInt(parseInt(sceneCount) + 1) + '. - ' + content;
     }
 
-    //console.log('%cAdd block ' + type, 'background-color:#28a745;color:#fff;padding:10px;border-radius:4px;font-family:Arial,sans-serif;');         
-
     // Add block to latest page
     var pages = document.getElementById('scenario').children;
+    if (pages.length < 1) {
+        createTitlePage('Title page', 'Written by', 'You', '', ''); // There must be an empty page
+    }
+
     var lastPage = pages[pages.length - 1];         
 
     if (focused) {
-        //lastPage.innerHTML += '<span class="'+type+'" id="edit" spellcheck="true" contenteditable="true" tabindex="0">'+content+'</span>';
         lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
     }
     else {
-        //lastPage.innerHTML += '<span class="'+type+'" spellcheck="true" contenteditable="true" tabindex="0">'+content+'</span>';
         lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
     }           
 
@@ -57,7 +56,6 @@ function addBlock(type, content = '', focused = false) {
     if (isPageFull(lastPage.getAttribute('id'))) {          
 
         // Remove from the old page           
-        //console.log('%cRemove block ' + type, 'background-color:#dc3545;color:#fff;padding:10px;border-radius:4px;font-family:Arial,sans-serif;');
         lastPage.removeChild(lastPage.lastChild);
         newPage();            
 
@@ -66,21 +64,16 @@ function addBlock(type, content = '', focused = false) {
             lastPage = document.getElementById('scenario').children[document.getElementById('scenario').children.length - 2];
             var cue = lastPage.lastChild.textContent;
             lastPage.removeChild(lastPage.lastChild);
-            //lastPage.lastChild.classList.add('empty');
             lastPage = document.getElementById('scenario').lastChild; // The newly generated page 
-            //lastPage.innerHTML += '<span class="character-cue" spellcheck="true" contenteditable="true" tabindex="0">'+cue+'</span>';
             lastPage.innerHTML += '<span class="character-cue">'+cue+'</span>';
-            //console.log('%cRemove block character cue', 'background-color:#ffc107;color:#fff;padding:10px;border-radius:4px;font-family:Arial,sans-serif;');
         }         
 
         // Add to the new page
         lastPage = document.getElementById('scenario').lastChild; // The newly generated page        
         if (focused) {
-            //lastPage.innerHTML += '<span class="'+type+'" id="edit" spellcheck="true" contenteditable="true" tabindex="0">'+content+'</span>';
             lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
         }
         else {
-            //lastPage.innerHTML += '<span class="'+type+'" spellcheck="true" contenteditable="true" tabindex="0">'+content+'</span>';
             lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
         }
 
@@ -98,13 +91,18 @@ function newPage() {
 }
 
 function createTitlePage(title, credit, author, date, contact) {
+    title = (title === undefined) ? 'The title of your script' : title;
+    credit = (credit === undefined) ? 'Written by' : credit;
+    author = (author === undefined) ? 'Written by' : author;
+    date = (date === undefined) ? 'today' : date;
+    contact = (contact === undefined) ? '' : contact;
     var titlePage = '<li class="fly-page paper a4-portrait" id="1">';
     titlePage += '<span class="lines-25"></span>';
     titlePage += '<span class="script-title" title="The title of this script.">'+title+'</span>';
     titlePage += '<span class="lines-2"></span>';
     titlePage += '<span class="credit">'+credit+'</span>';
     titlePage += '<span class="author" title="The full name of the writer of this script.">'+author+'</span>';
-    contact = contact.replace('/\r?\n/', '<br />');
+    if (contact) { contact = contact.replace('/\r?\n/', '<br />'); }
     titlePage += '<span class="contact" title="The contact details of the writer of this script.">'+contact+'</span>';
     titlePage += '</li>';
     document.getElementById('scenario').innerHTML = titlePage;
