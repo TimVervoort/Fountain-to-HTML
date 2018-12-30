@@ -18,7 +18,13 @@ html, body {
 }
 a {
     color: #000;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    transition: all 0.3s;
+}
+a:hover {
+    cursor: pointer;
+    color: #0a0;
 }
 html {
     scroll-behavior: smooth;
@@ -189,4 +195,24 @@ span {
 .bold {
     display: contents;
     font-weight: bold;
+}
+
+#percent {
+    position: absolute;
+    height: 10px;
+    width: 200px;
+    top: calc(50% - 5px);
+    left: calc(50% - 100px);
+    background-color: rgba(0, 0, 0, 0.2);
+    display: block;
+    opacity: 0;
+    z-index: 9999999;
+}
+#percent #progress {
+    position: relative;
+    float: left;
+    height: 10px;
+    width: 0;
+    background-color: green;
+    opacity: 1;
 }

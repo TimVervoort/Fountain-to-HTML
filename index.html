@@ -5,37 +5,52 @@
         <title>Fountain to HTML</title>
         <link href="css/viewer.css" type="text/css" rel="stylesheet" />
         <link href="css/styles.css" type="text/css" rel="stylesheet" />
+        <link href="css/notification.css" type="text/css" rel="stylesheet" />
 
     </head>
     <body>
 
+        <div>
+            <div id="percent"><div id="progress"></div></div>
+            <ul id="notifications"></ul>
+        </div>
+
         <div id="editor">
-            <textarea id="fountain"></textarea>
+            <textarea id="fountain" placeholder="Start writing your screenplay in Fountain here..."></textarea>
         </div>
         <div id="viewer">
-            <ul id="scenario"></ul>
+            <ul id="scenario">
+                <li><p class="message">Start writing your script in Fountain. More info on how to write Fountain can be found here: <a href="https://fountain.io/syntax" target="_blank">fountain.io/syntax</a>.</a></p></li>
+            </ul>
         </div>
+
 
         <script type="text/javascript" src="js/display.js"></script>
         <script type="text/javascript" src="js/parser.js"></script>
         <script type="text/javascript" src="js/screenplay.js"></script>
+        <script type="text/javascript" src="js/notification.js"></script>
+        <script type="text/javascript" src="js/cookie.js"></script>
         <script type="text/javascript">
-            //function readFile(file) {
-            //    var f = new XMLHttpRequest();
-            //    f.open('GET', file, false);
-            //    f.onreadystatechange = function() {
-            //        if (f.readyState === 4 && (f.status === 200 || f.status == 0)) {
-            //            var c = f.responseText;
-            //            document.getElementById('fountain').value = c;
-            //            var p = new FountainParser('fountain').parseFountain();
-            //        }
-            //    }
-            //    f.send(null);
-            //}
-            //readFile('example.fountain');
-            var p = new FountainParser('fountain');
-            var sp = new Screenplay('fountain', p);
-            p.parseFountain();
+
+            var d = new DisplayScript();
+            var n = new NotificationHandler();
+            var p = new FountainParser('fountain', d, n);
+            var sp = new Screenplay('fountain', p, d);
+
+            function readFile(file) {
+                var f = new XMLHttpRequest();
+                f.open('GET', file, false);
+                f.onreadystatechange = function() {
+                    if (f.readyState === 4 && (f.status === 200 || f.status == 0)) {
+                        var c = f.responseText;
+                        document.getElementById('fountain').value = c;
+                        p.parseFountain();
+                    }
+                }
+                f.send(null);
+            }
+            readFile('example.fountain');
+            
         </script>
 
     </body>

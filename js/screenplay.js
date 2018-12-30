@@ -1,11 +1,12 @@
 class Screenplay {
 
-    constructor(domId, parser) {
+    constructor(domId, parser, display) {
 
         var t = this;
 
-        t.fountain = domId;
-        t.fountainParser = parser;
+        t.domId = domId;
+        t.parser = parser;
+        t.view = display;
 
         // Store character names
         t.characters = [];
@@ -14,12 +15,15 @@ class Screenplay {
 
         // React to user typing Fountain
         t.delayTime;
-        document.getElementById(t.fountain).addEventListener('keyup', function(e) {
+        document.getElementById(t.domId).addEventListener('keyup', () => startParsing(), false);    
+
+        async function startParsing() {
             clearInterval(t.delayTime); // Only parses one time, if the user does not type after the last parse, no new call will be launched
             t.delayTime = setTimeout(function() {
-                clearScript();
-                t.fountainParser.parseFountain(); // Wait before parsing, start parsing when the user isn't typing
+                t.view.clearScript();
+                t.parser.parseFountain(); // Wait before parsing, start parsing when the user isn't typing              
             }, t.typeTimeout);
-        });
+        }
+
     }
 }

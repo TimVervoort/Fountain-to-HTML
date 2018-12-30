@@ -1,7 +1,9 @@
 class FountainParser {
 
-    constructor(domId) {
-        this.fountain = document.getElementById(domId);
+    constructor(domId, display, notify) {
+        this.view = display;
+        this.contents = document.getElementById(domId);
+        this.notifications = notify;
     }
 
     parseTitlePage(line) {
@@ -46,52 +48,60 @@ class FountainParser {
 
     parseFountain() {
 
-        var lines = this.fountain.value.split(/\r?\n\r?\n/); // Get content
-        if (lines.length <= 1) { console.log('Tip: place an empty line between every block.'); return; }
+        var lines = this.contents.value.split(/\r?\n\r?\n/); // Get content
+        if (lines.length <= 1) {
+            this.notifications.addTip('Tip: place an empty line between every block.');
+            return;
+        }
+        var percent = 0;
 
         for (var i = 0; i < lines.length; i++) {
-        
+
+            // Display percentage
+            percent = Math.round(((i + 1) / lines.length) * 100);
+            
             var line = this.clearStr(lines[i]); // Clear string from unnecessary spaces and tabs
             if (line.length == 0) { continue; } // Skip empty lines
-            line = this.emphasis(line); // Apply formatting
         
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
-                addBlock('heading', line);
+                this.view.addBlock('heading', line);
             }
         
             else if (this.isTitlePage(line)) {
                 var o = this.parseTitlePage(line);
-                createTitlePage(o['title'], o['credit'], o['author'], o['draft_date'], o['contact']);
+                this.view.createTitlePage(o['title'], o['credit'], o['author'], o['draft_date'], o['contact']);
+            }
+
+            else if (this.isCentered(line)) {
+                this.view.addBlock('center', this.emphasis(this.centerText(line)));
             }
 
             else if (this.isDualDialog(line)) {
                 var parts = line.split('\n');
                 if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
-                addBlock('character-cue', parts[0].replace('^', '').trim());
-                addBlock('dialog', parts.slice(1).join('<br />').trim());
+                this.view.addBlock('character-cue', parts[0].replace('^', '').trim());
+                this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
             }
         
             else if (this.isDialog(line)) {
                 var parts = line.split('\n');
                 if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
-                addBlock('character-cue', parts[0]);
-                addBlock('dialog', parts.slice(1).join('<br />').trim());
+                this.view.addBlock('character-cue', parts[0]);
+                this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
             }
 
             else if (this.isTransition(line)) {
                 if (line[0] == '>') { line = line.slice(1).trim(); }
-                addBlock('transition', line);
+                this.view.addBlock('transition', line);
             }
         
             else {
                 if (line[0] == '!') { line = line.slice(1); } // Remove leading !
-                addBlock('action', line);
+                this.view.addBlock('action', this.emphasis(line));
             }
         
         }
-
-        console.log('Parsing done.');
 
     }
 
@@ -134,31 +144,40 @@ class FountainParser {
     }
 
     isTransition(str) {
-        return str[0] == '>' || (str.toUpperCase() == str && str.slice(-3) == 'TO:'); // In uppercase and ending with 'TO:' or beginning with '>'
+        return (str[0] == '>' && str.slice(-1) != '<') || (str.toUpperCase() == str && str.slice(-3) == 'TO:'); // In uppercase and ending with 'TO:' or beginning with '>'
     }
 
     isLyric(str) {
         return str[0] == '~';
     }
 
+    isCentered(str) {
+        str = str.trim();
+        return str[0] == '>' && str.slice(-1) == '<';
+    }
+
+    centerText(str) {
+        str = str.replace(/>[a-zA-Z0-9\s,.\-_='"!@#$%^&\*()/\\]*</g, function(s) { // Center
+            return '<span>' + s.slice(1, -1).trim() + '</span>';
+        });
+        return str;
+    }
+
     emphasis(str) {
-        str = str.replace(/\[\[[a-zA-Z0-9\s\r\n,.\-_=<>'"!@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
+        str = str.replace(/\[\[[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
             console.log('Found user note: ' + s.slice(2, -2));
             return '';
-        });
-        str = str.replace(/>[a-zA-Z0-9\s\r\n,.\-_='"!@#$%^&\*()/\\]*</g, function(s) { // Center
-            return '<span class="center">' + s.slice(1, -1).trim() + '</span>';
-        });
-        str = str.replace(/\*\*\*[a-zA-Z0-9\s\r\n,.\-_=<>'"!@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
+        });     
+        str = str.replace(/\*\*\*[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
             return '<span class="bold italic">' + s.slice(3, -3).trim() + '</span>';
         });
-        str = str.replace(/\*\*[a-zA-Z0-9\s\r\n,.\-_=<>'"!@#$%^&()/\\]*\*\*/g, function(s) { // Bold
+        str = str.replace(/\*\*[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&()/\\]*\*\*/g, function(s) { // Bold
             return '<span class="bold">' + s.slice(2, -2).trim() + '</span>';
         });
-        str = str.replace(/\*[a-zA-Z0-9\s\r\n,.\-_=<>'"!@#$%^&()/\\]*\*/g, function(s) { // Italic
+        str = str.replace(/\*[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&()/\\]*\*/g, function(s) { // Italic
             return '<span class="italic">' + s.slice(1, -1).trim() + '</span>';
         });
-        str = str.replace(/_[a-zA-Z0-9\s\r\n,.\-=<>'"!@#$%^&\*()/\\]*_/g, function(s) { // Underline
+        str = str.replace(/_[a-zA-Z0-9\s,.\-=<>'"!@#$%^&\*()/\\]*_/g, function(s) { // Underline
             return '<span class="underline">' + s.slice(1, -1).trim() + '</span>';
         });
         return str;
