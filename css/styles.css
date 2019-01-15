@@ -1,23 +1,82 @@
-body {
-    box-sizing: border-box;
-    padding: 20px;
-    
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: #fff;
+    font-family: 'Raleway', sans-serif;
+    scroll-behavior: smooth;
+    font-size: 14px;
+    line-height: 1;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+*, *:focus *:active, *:hover {
+    outline: none;
+}
+header {
+    height: 40px;
+    width: 100%;
+    background-color: #5d6879;
+    color: #9da7b7;
+}
+header nav {
+    float: right;
+    overflow: hidden;
+}
+header nav section {
+    display: inline-block;
+    padding: 0 20px;
+}
+header nav span {
+    display: inline-block;
+    clear: none;
+    width: auto;
+    margin-bottom: 0;
+    height: 40px;
+    line-height: 40px;
+}
+header h1 {
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px;
+    font-weight: normal;
+    float: left;
+}
+footer {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    width: calc(100% - 23cm - 20px);
+    float: left;
+    font-size: 12px;
+}
+footer a {
+    color: #000;
+    text-decoration: underline;
+    text-decoration-style: dotted;
 }
 #editor {
-    height: 100%;
+    height: calc(100% - 70px);
     overflow: hidden;
     width: calc(100% - 23cm);
     float: left;
     padding: 0;
 }
 #viewer {
-    height: 100%;
-    padding: 0;
+    height: calc(100% - 40px);
+    padding: 20px 0;
     overflow-x: hidden;
     overflow-y: auto;
     width: 23cm;
     position: relative;
     float: right;
+    background-color: #ddd;
 }
 #viewer ul {
     width: 100%;
@@ -27,14 +86,19 @@ body {
     padding: 0;
 }
 @media print {
-    #editor {
+    header, footer, #editor, .message {
         display: none;
+    }
+    html, body {
+        height: auto;
+        overflow: visible;
     }
     #viewer {
         width: 100%;
         height: auto;
-        overflow: auto;
+        overflow: visible;
         padding: 0;
+        display: block;
     }
 }
 #editor textarea {
@@ -46,18 +110,63 @@ body {
     border: none;
     overflow-x: hidden;
     background-color: #fff;
-    overflow-y: scroll;
+    overflow-y: auto;
     font-size: 16px;
     line-height: 1.5;
     box-sizing: border-box;
     padding: 20px;
+    resize: none;
 }
 
 .message {
-    background-color: #ccc;
-    color: #000;
+    background-color: #2c3645;
+    color: #fff;
     padding: 20px;
     margin: 20px;
-    border-radius: 10px;
+    border-radius: 4px;
     width: calc(100% - 80px);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.message a {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+button {
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    width: 120px;
+    background-color: #2c3645;
+    color: #9da7b7;
+    text-align: center;
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s;
+    display: block;
+    float: right;
+}
+button:hover, #upload-file-wrapper:hover button {
+    cursor: pointer;
+    background-color: #5d6879;
+    color: #fff;
+}
+#upload-file-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    float: right;
+}
+#upload-file-wrapper input[type="file"] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+input[type="file"]:hover {
+    cursor: pointer;
 }

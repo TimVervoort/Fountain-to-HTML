@@ -1,9 +1,8 @@
 class FountainParser {
 
-    constructor(domId, display, notify) {
+    constructor(domId, display) {
         this.view = display;
         this.contents = document.getElementById(domId);
-        this.notifications = notify;
     }
 
     parseTitlePage(line) {
@@ -49,16 +48,9 @@ class FountainParser {
     parseFountain() {
 
         var lines = this.contents.value.split(/\r?\n\r?\n/); // Get content
-        if (lines.length <= 1) {
-            this.notifications.addTip('Tip: place an empty line between every block.');
-            return;
-        }
-        var percent = 0;
+        if (lines.length <= 1) { return; }
 
         for (var i = 0; i < lines.length; i++) {
-
-            // Display percentage
-            percent = Math.round(((i + 1) / lines.length) * 100);
             
             var line = this.clearStr(lines[i]); // Clear string from unnecessary spaces and tabs
             if (line.length == 0) { continue; } // Skip empty lines
@@ -102,6 +94,8 @@ class FountainParser {
             }
         
         }
+
+        updateStats();
 
     }
 

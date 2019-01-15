@@ -47,7 +47,7 @@ class DisplayScript {
         // Add block to latest page
         var pages = document.getElementById('scenario').children;
         if (pages.length < 1) {
-            this.createTitlePage('Title page', 'Written by', 'You', '', ''); // There must be an empty page
+            this.createTitlePage('Untitled Screenplay', 'Written by', 'You', '', ''); // There must be an empty page
         }
 
         var lastPage = pages[pages.length - 1];         
@@ -84,7 +84,7 @@ class DisplayScript {
                 lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
             }
 
-        }           
+        }  
 
     }
 
@@ -103,6 +103,7 @@ class DisplayScript {
         author = (author === undefined) ? 'Written by' : author;
         date = (date === undefined) ? 'today' : date;
         contact = (contact === undefined) ? '' : contact;
+        updateTitle(title);
         var titlePage = '<li class="fly-page paper a4-portrait" id="1">';
         titlePage += '<span class="lines-25"></span>';
         titlePage += '<span class="script-title" title="The title of this script.">'+title+'</span>';
@@ -114,18 +115,6 @@ class DisplayScript {
         titlePage += '</li>';
         document.getElementById('scenario').innerHTML = titlePage;
         this.newPage();
-    }
-
-    loading(p) {
-        if (p == 100) {
-            percent.style.opacity = 0;
-            progress.style.width = 0;
-        }
-        else {
-            percent.style.opacity = 1;
-            progress.style.width = p + '%';
-        }
-        return;
     }
 
 }
