@@ -70,7 +70,6 @@ footer a {
 }
 #viewer {
     height: calc(100% - 40px);
-    padding: 20px 0;
     overflow-x: hidden;
     overflow-y: auto;
     width: 23cm;
@@ -80,10 +79,10 @@ footer a {
 }
 #viewer ul {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 50px);
     overflow: auto;
     margin: 0 auto;
-    padding: 0;
+    padding: 25px 0;
 }
 @media print {
     header, footer, #editor, .message {
@@ -98,6 +97,24 @@ footer a {
         height: auto;
         overflow: visible;
         padding: 0;
+        display: block;
+    }
+    #viewer ul {
+        padding: 0;
+        height: 100%;
+    }
+}
+#change-view {
+    display: none;
+}
+@media screen and (max-width: 1240px) {
+    #viewer {
+        width: 0;
+    }
+    #editor {
+        width: 100%;
+    }
+    #change-view {
         display: block;
     }
 }

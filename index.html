@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         <title>Fountain to HTML</title>
         <link href="css/viewer.css" type="text/css" rel="stylesheet" />
         <link href="css/styles.css" type="text/css" rel="stylesheet" />
+        <meta name="theme-color" content="#5d6879" />
     </head>
     <body>
 
@@ -15,7 +18,8 @@
                     <span id="word-count">0</span> words, 
                     <span id="scene-count">0</span> scenes, 
                     <span id="page-count">0</span> pages
-                </section>              
+                </section> 
+                <button id="change-view">View</button>             
                 <div id="upload-file-wrapper">
                     <button>Upload</button>
                     <input type="file" name="upload-file" id="upload-file" />              
@@ -67,12 +71,25 @@
             
             // Download Fountain script
             document.getElementById('download-file').addEventListener('click', function(e) {
-                var content = document.getElementById('fountain').value;
+                var content = document.getElementById('fountain').value; /// TODO FROM TITLE AND CURRENT DATE AND TIME
                 var filename = 'screenplay.fountain.txt';
                 var blob = new Blob([content], {
                     type: "text/plain;charset=utf-8"
                 });
                 saveAs(blob, filename);
+            });
+
+            document.getElementById('change-view').addEventListener('click', function(e) {
+                if (document.getElementById('change-view').innerText == 'View') {
+                    document.getElementById('change-view').innerText = 'Edit';
+                    document.getElementById('viewer').style.width = '100%';
+                    document.getElementById('editor').style.width = '0%';
+                }
+                else {
+                    document.getElementById('change-view').innerText = 'View';
+                    document.getElementById('viewer').style.width = '0%';
+                    document.getElementById('editor').style.width = '100%';
+                }
             });
 
             function updateTitle(title) {
