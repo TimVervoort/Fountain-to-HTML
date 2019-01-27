@@ -187,3 +187,30 @@ button:hover, #upload-file-wrapper:hover button {
 input[type="file"]:hover {
     cursor: pointer;
 }
+#mobile-menu {
+    display: none;
+    top: 0;
+    right: 0;
+    position: fixed;
+}
+@media screen and (max-width: 980px) {
+    header nav {
+        position: fixed;
+        top: 40px;
+        right: 0;
+        height: 0;
+        overflow: hidden;
+    }
+    button, #upload-file-wrapper {
+        clear: both;
+    }
+    header nav section {
+        display: none;
+    }
+    #mobile-menu {
+        display: block;
+    }
+    footer {
+        width: 100%;
+    }
+}

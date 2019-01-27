@@ -13,6 +13,7 @@
 
         <header>
             <h1 id="title">Untitled Screenplay</h1>
+            <button id="mobile-menu" onclick="toggleMenu();">Menu</button>
             <nav>
                 <section>
                     <span id="word-count">0</span> words, 
@@ -100,6 +101,15 @@
                 document.getElementById('page-count').innerText = document.getElementById('scenario').children.length;
                 document.getElementById('scene-count').innerText = document.getElementsByClassName('heading').length;
                 document.getElementById('word-count').innerText = document.getElementById('fountain').value.trim().split(/\s+/).length;
+            }
+
+            function toggleMenu() {
+                if (document.querySelector('header nav').style.height !== 'auto') {
+                    document.querySelector('header nav').style.height = 'auto';
+                }
+                else {
+                    document.querySelector('header nav').style.height = 0;
+                }
             }
            
         </script>
