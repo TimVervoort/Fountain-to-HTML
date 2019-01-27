@@ -200,6 +200,7 @@ input[type="file"]:hover {
         right: 0;
         height: 0;
         overflow: hidden;
+        z-index: 1;
     }
     button, #upload-file-wrapper {
         clear: both;
