@@ -1,9 +1,4 @@
 class DisplayScript {
-
-    constructor() {
-        this.percent = document.getElementById('percent');
-        this.progressBar = document.getElementById('progress');
-    }
     
     /**
      * Returns true if a page is full or false otherwise.

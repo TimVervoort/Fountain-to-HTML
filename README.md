@@ -7,6 +7,12 @@ Fountain syntax is based on the description found on [fountain.io/syntax](https:
 # Printing
 Make sure to turn print margins off or set them to a minimal. Instructions on how to alter print settings in chrome can be found on [technorms.com/26421/change-print-settings-chrome](https://www.technorms.com/26421/change-print-settings-chrome).
 
+# Extra's
+- Upload local text file with Fountain script to edit/display
+- Download text file with Fountain script
+- Responsive, mobile friendly
+- Count pages, scènes, dialogs, locations and words
+
 # Not yet implemented
 - Display dual dialog
 - Display lyrics

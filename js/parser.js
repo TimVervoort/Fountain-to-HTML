@@ -1,5 +1,8 @@
 class FountainParser {
 
+    characters = [];
+    locations = [];
+
     constructor(domId, display) {
         this.view = display;
         this.contents = document.getElementById(domId);
@@ -45,7 +48,26 @@ class FountainParser {
 
     }
 
+    addToArrayUnique(arr, str) {
+        str = str.trim().toUpperCase();
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] == str) { return; } // Already present
+        }
+        arr.push(str);
+    }
+
+    addCharacter(name) {
+        name = name.replace('CONT\'D', '');
+        this.addToArrayUnique(this.characters, name);
+    }
+
+    addLocation(location) {
+        this.addToArrayUnique(this.locations, location);
+    }
+
     parseFountain() {
+
+        this.characters = []; // Clear characters
 
         var lines = this.contents.value.split(/\r?\n\r?\n/); // Get content
         if (lines.length <= 1) { return; }
@@ -58,6 +80,8 @@ class FountainParser {
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
                 this.view.addBlock('heading', line);
+                var location = line.split('-')[1].trim();
+                this.addLocation(location);
             }
         
             else if (this.isTitlePage(line)) {
@@ -74,6 +98,7 @@ class FountainParser {
                 if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
                 this.view.addBlock('character-cue', parts[0].replace('^', '').trim());
                 this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
+                this.addCharacter(parts[0].replace('^', '').trim());
             }
         
             else if (this.isDialog(line)) {
@@ -81,6 +106,7 @@ class FountainParser {
                 if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
                 this.view.addBlock('character-cue', parts[0]);
                 this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
+                this.addCharacter(parts[0]);
             }
 
             else if (this.isTransition(line)) {
@@ -151,27 +177,27 @@ class FountainParser {
     }
 
     centerText(str) {
-        str = str.replace(/>[a-zA-Z0-9\s,.\-_='"!@#$%^&\*()/\\]*</g, function(s) { // Center
+        str = str.replace(/>[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_='"!?@#$%^&\*()/\\]*</g, function(s) { // Center
             return '<span>' + s.slice(1, -1).trim() + '</span>';
         });
         return str;
     }
 
     emphasis(str) {
-        str = str.replace(/\[\[[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
+        str = str.replace(/\[\[[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
             console.log('Found user note: ' + s.slice(2, -2));
             return '';
         });     
-        str = str.replace(/\*\*\*[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
+        str = str.replace(/\*\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
             return '<span class="bold italic">' + s.slice(3, -3).trim() + '</span>';
         });
-        str = str.replace(/\*\*[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&()/\\]*\*\*/g, function(s) { // Bold
+        str = str.replace(/\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*/g, function(s) { // Bold
             return '<span class="bold">' + s.slice(2, -2).trim() + '</span>';
         });
-        str = str.replace(/\*[a-zA-Z0-9\s,.\-_=<>'"!@#$%^&()/\\]*\*/g, function(s) { // Italic
+        str = str.replace(/\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*/g, function(s) { // Italic
             return '<span class="italic">' + s.slice(1, -1).trim() + '</span>';
         });
-        str = str.replace(/_[a-zA-Z0-9\s,.\-=<>'"!@#$%^&\*()/\\]*_/g, function(s) { // Underline
+        str = str.replace(/_[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-=<>'"!?@#$%^&\*()/\\]*_/g, function(s) { // Underline
             return '<span class="underline">' + s.slice(1, -1).trim() + '</span>';
         });
         return str;

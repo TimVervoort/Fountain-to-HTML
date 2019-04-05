@@ -8,9 +8,6 @@ class Screenplay {
         t.parser = parser;
         t.view = display;
 
-        // Store character names
-        t.characters = [];
-
         t.typeTimeout = 1000; // Wait ms before assuming user stopped typing
 
         // React to user typing Fountain
@@ -26,4 +23,5 @@ class Screenplay {
         }
 
     }
+
 }

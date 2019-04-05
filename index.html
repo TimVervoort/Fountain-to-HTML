@@ -16,9 +16,11 @@
             <button id="mobile-menu" onclick="toggleMenu();">Menu</button>
             <nav>
                 <section>
-                    <span id="word-count">0</span> words, 
-                    <span id="scene-count">0</span> scenes, 
-                    <span id="page-count">0</span> pages
+                    <span id="location-count" title="The amount of different locations used in this script.">0</span> locations,
+                    <span id="dialog-count" title="The amount of people who have dialog in this script.">0</span> speakers,
+                    <span id="word-count" title="The amount of words in the script.">0</span> words, 
+                    <span id="scene-count" title="The amount of scenes in the script.">0</span> scenes, 
+                    <span id="page-count" title="The amount of pages, including the title page.">0</span> pages
                 </section> 
                 <button id="change-view">View</button>             
                 <div id="upload-file-wrapper">
@@ -26,7 +28,7 @@
                     <input type="file" name="upload-file" id="upload-file" />              
                 </div>
                 <button id="download-file">Download</button>
-                <button onclick="window.print();">Print</button>
+                <button onclick="alert('Zet printer margins op 0, geen of minimaal. Papier A4, portret.');window.print();">Print</button>
             </nav>     
         </header>
 
@@ -69,11 +71,40 @@
 		    		document.getElementById('fountain').value = "File not supported!";
 		    	}
             });
+
+            function getDateTime() {
+                var now     = new Date(); 
+                var year    = now.getFullYear();
+                var month   = now.getMonth()+1; 
+                var day     = now.getDate();
+                var hour    = now.getHours();
+                var minute  = now.getMinutes();
+                var second  = now.getSeconds(); 
+                if(month.toString().length == 1) {
+                     month = '0'+month;
+                }
+                if(day.toString().length == 1) {
+                     day = '0'+day;
+                }   
+                if(hour.toString().length == 1) {
+                     hour = '0'+hour;
+                }
+                if(minute.toString().length == 1) {
+                     minute = '0'+minute;
+                }
+                if(second.toString().length == 1) {
+                     second = '0'+second;
+                }   
+                var dateTime = year+'-'+month+'-'+day+'_'+hour+':'+minute+':'+second;   
+                return dateTime;
+            }
             
             // Download Fountain script
             document.getElementById('download-file').addEventListener('click', function(e) {
                 var content = document.getElementById('fountain').value; /// TODO FROM TITLE AND CURRENT DATE AND TIME
-                var filename = 'screenplay.fountain.txt';
+                var title = document.getElementById('title').innerText;
+                var dateTime = getDateTime();
+                var filename = title + '_' + dateTime + '.txt';
                 var blob = new Blob([content], {
                     type: "text/plain;charset=utf-8"
                 });
@@ -81,6 +112,7 @@
             });
 
             document.getElementById('change-view').addEventListener('click', function(e) {
+                console.log('View changed.')
                 if (document.getElementById('change-view').innerText == 'View') {
                     document.getElementById('change-view').innerText = 'Edit';
                     document.getElementById('viewer').style.width = '100%';
@@ -101,9 +133,12 @@
                 document.getElementById('page-count').innerText = document.getElementById('scenario').children.length;
                 document.getElementById('scene-count').innerText = document.getElementsByClassName('heading').length;
                 document.getElementById('word-count').innerText = document.getElementById('fountain').value.trim().split(/\s+/).length;
+                document.getElementById('dialog-count').innerText = p.characters.length;
+                document.getElementById('location-count').innerText = p.locations.length;
             }
 
             function toggleMenu() {
+                if (window.innerWidth > 980) { return; }
                 if (document.querySelector('header nav').style.height !== 'auto') {
                     document.querySelector('header nav').style.height = 'auto';
                 }
@@ -115,6 +150,10 @@
             document.querySelector('header nav').addEventListener('click', function() {
                 toggleMenu();
             });
+
+            window.onbeforeunload = function(){
+                return 'Have you saved everything? Click download to store the script on your pc.';
+            };
            
         </script>
 
