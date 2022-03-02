@@ -76,6 +76,7 @@ class FountainParser {
 
             var line = this.clearStr(lines[i]); // Clear string from unnecessary spaces and tabs
             if (line.length == 0) { continue; } // Skip empty lines
+            if (this.isSection(line) || this.isSynopsis(line)) { continue; } // Skip Section and Synopsis
 
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
@@ -165,6 +166,14 @@ class FountainParser {
 
     isTransition(str) {
         return (str[0] == '>' && str.slice(-1) != '<') || (str.toUpperCase() == str && str.slice(-3) == 'TO:'); // In uppercase and ending with 'TO:' or beginning with '>'
+    }
+
+    isSynopsis(str) {
+        return str[0] == '=';
+    }
+
+    isSection(str) {
+        return str[0] == '#';
     }
 
     isLyric(str) {
