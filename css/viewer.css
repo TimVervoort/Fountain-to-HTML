@@ -51,6 +51,7 @@ span {
     margin-left: calc(1.5 * 2.54cm);
     margin-right: calc(1 * 2.54cm);
     width: calc(6 * 2.54cm);
+    text-transform: uppercase;
 }
 .action {
     margin-left: calc(1.5 * 2.54cm);
