@@ -18,18 +18,18 @@
                 <section>
                     <span id="location-count" title="The amount of different locations used in this script.">0</span> locations,
                     <span id="dialog-count" title="The amount of people who have dialog in this script.">0</span> speakers,
-                    <span id="word-count" title="The amount of words in the script.">0</span> words, 
-                    <span id="scene-count" title="The amount of scenes in the script.">0</span> scenes, 
+                    <span id="word-count" title="The amount of words in the script.">0</span> words,
+                    <span id="scene-count" title="The amount of scenes in the script.">0</span> scenes,
                     <span id="page-count" title="The amount of pages, including the title page.">0</span> pages
-                </section> 
-                <button id="change-view">View</button>             
+                </section>
+                <button id="change-view">View</button>
                 <div id="upload-file-wrapper">
                     <button>Upload</button>
-                    <input type="file" name="upload-file" id="upload-file" />              
+                    <input type="file" name="upload-file" id="upload-file" />
                 </div>
                 <button id="download-file">Download</button>
-                <button onclick="alert('Zet printer margins op 0, geen of minimaal. Papier A4, portret.');window.print();">Print</button>
-            </nav>     
+                <button onclick="alert('Set printer margins to 0, none or minimal. Paper A4, portrait.');window.print();">Print</button>
+            </nav>
         </header>
 
         <div id="editor">
@@ -65,7 +65,7 @@
                         document.getElementById('fountain').value = reader.result;
                         p.parseFountain();
 		    		}
-		    		reader.readAsText(file);	
+		    		reader.readAsText(file);
                 }
                 else {
 		    		document.getElementById('fountain').value = "File not supported!";
@@ -73,19 +73,19 @@
             });
 
             function getDateTime() {
-                var now     = new Date(); 
+                var now     = new Date();
                 var year    = now.getFullYear();
-                var month   = now.getMonth()+1; 
+                var month   = now.getMonth()+1;
                 var day     = now.getDate();
                 var hour    = now.getHours();
                 var minute  = now.getMinutes();
-                var second  = now.getSeconds(); 
+                var second  = now.getSeconds();
                 if(month.toString().length == 1) {
                      month = '0'+month;
                 }
                 if(day.toString().length == 1) {
                      day = '0'+day;
-                }   
+                }
                 if(hour.toString().length == 1) {
                      hour = '0'+hour;
                 }
@@ -94,11 +94,11 @@
                 }
                 if(second.toString().length == 1) {
                      second = '0'+second;
-                }   
-                var dateTime = year+'-'+month+'-'+day+'_'+hour+':'+minute+':'+second;   
+                }
+                var dateTime = year+'-'+month+'-'+day+'_'+hour+':'+minute+':'+second;
                 return dateTime;
             }
-            
+
             // Download Fountain script
             document.getElementById('download-file').addEventListener('click', function(e) {
                 var content = document.getElementById('fountain').value; /// TODO FROM TITLE AND CURRENT DATE AND TIME
@@ -154,7 +154,7 @@
             window.onbeforeunload = function(){
                 return 'Have you saved everything? Click download to store the script on your pc.';
             };
-           
+
         </script>
 
     </body>
