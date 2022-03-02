@@ -24,14 +24,14 @@ class FountainParser {
                 var key = parts[i].split(':')[0].trim().toLowerCase().replace(' ', '_');
                 lastKey = key; // Store new key
                 if (!obj[lastKey]) { obj[lastKey] = ''; } // Create key
-                
+
                 // Value on next line
                 if (parts[i].split(':').length > 1) {
                     var val = parts[i].split(':')[1].trim();
                     if (val.length <= 1) { continue; }
                     if (obj[lastKey].length > 0) { obj[lastKey] += '<br />'; }
                     obj[lastKey] += val;
-                }   
+                }
 
             }
 
@@ -57,7 +57,7 @@ class FountainParser {
     }
 
     addCharacter(name) {
-        name = name.replace('CONT\'D', '');
+        name = name.replace(/\s*\([^)]*\)$/, '');
         this.addToArrayUnique(this.characters, name);
     }
 
@@ -73,17 +73,17 @@ class FountainParser {
         if (lines.length <= 1) { return; }
 
         for (var i = 0; i < lines.length; i++) {
-            
+
             var line = this.clearStr(lines[i]); // Clear string from unnecessary spaces and tabs
             if (line.length == 0) { continue; } // Skip empty lines
-        
+
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
                 this.view.addBlock('heading', line);
                 var location = line.split('-')[1].trim();
                 this.addLocation(location);
             }
-        
+
             else if (this.isTitlePage(line)) {
                 var o = this.parseTitlePage(line);
                 this.view.createTitlePage(o['title'], o['credit'], o['author'], o['draft_date'], o['contact']);
@@ -100,7 +100,7 @@ class FountainParser {
                 this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
                 this.addCharacter(parts[0].replace('^', '').trim());
             }
-        
+
             else if (this.isDialog(line)) {
                 var parts = line.split('\n');
                 if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
@@ -113,12 +113,12 @@ class FountainParser {
                 if (line[0] == '>') { line = line.slice(1).trim(); }
                 this.view.addBlock('transition', line);
             }
-        
+
             else {
                 if (line[0] == '!') { line = line.slice(1); } // Remove leading !
                 this.view.addBlock('action', this.emphasis(line));
             }
-        
+
         }
 
         updateStats();
@@ -187,7 +187,7 @@ class FountainParser {
         str = str.replace(/\[\[[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
             console.log('Found user note: ' + s.slice(2, -2));
             return '';
-        });     
+        });
         str = str.replace(/\*\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
             return '<span class="bold italic">' + s.slice(3, -3).trim() + '</span>';
         });
