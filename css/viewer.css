@@ -159,7 +159,7 @@ span {
     text-align: center;
 }
 .underline {
-    display: contents;
+    display: inline;
     text-decoration: underline;
 }
 .italic {
