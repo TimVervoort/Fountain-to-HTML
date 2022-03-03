@@ -81,7 +81,7 @@ class FountainParser {
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
                 this.view.addBlock('heading', line);
-                var location = line.split('-')[1].trim();
+                var location = line.split('-')[0].trim();
                 this.addLocation(location);
             }
 
