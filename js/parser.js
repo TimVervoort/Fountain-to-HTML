@@ -69,7 +69,7 @@ class FountainParser {
 
         this.characters = []; // Clear characters
 
-        var lines = this.contents.value.split(/\r?\n\r?\n/); // Get content
+        var lines = this.clearBoneyard(this.contents.value).split(/\r?\n\r?\n/); // Get content
         if (lines.length <= 1) { return; }
 
         for (var i = 0; i < lines.length; i++) {
@@ -217,6 +217,11 @@ class FountainParser {
         str = str.toString().replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Convert tabs to 4 spaces
         str = str.toString().replace(/ +(?= )/g,''); // Remove double spaces
         str = str.toString().trim(); // Remove leading and trailing spaces
+        return str;
+    }
+
+    clearBoneyard(str) {
+        str = str.toString().replace(/\/\*.*?\*\//sg, '');
         return str;
     }
 
