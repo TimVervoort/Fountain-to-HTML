@@ -186,27 +186,27 @@ class FountainParser {
     }
 
     centerText(str) {
-        str = str.replace(/>[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_='"!?@#$%^&\*()/\\]*</g, function(s) { // Center
+        str = str.replace(/>[^\<]*</g, function(s) { // Center
             return '<span>' + s.slice(1, -1).trim() + '</span>';
         });
         return str;
     }
 
     emphasis(str) {
-        str = str.replace(/\[\[[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
+        str = str.replace(/\[\[[^\]]*\]\]/g, function(s) { // Notes
             console.log('Found user note: ' + s.slice(2, -2));
             return '';
         });
-        str = str.replace(/\*\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
+        str = str.replace(/\*\*\*[^\*]*\*\*\*/g, function(s) { // Bold & italics
             return '<span class="bold italic">' + s.slice(3, -3).trim() + '</span>';
         });
-        str = str.replace(/\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*/g, function(s) { // Bold
+        str = str.replace(/\*\*[^\*]*\*\*/g, function(s) { // Bold
             return '<span class="bold">' + s.slice(2, -2).trim() + '</span>';
         });
-        str = str.replace(/\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*/g, function(s) { // Italic
+        str = str.replace(/\*[^\*]*\*/g, function(s) { // Italic
             return '<span class="italic">' + s.slice(1, -1).trim() + '</span>';
         });
-        str = str.replace(/_[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-=<>'"!?@#$%^&\*()/\\]*_/g, function(s) { // Underline
+        str = str.replace(/_[^\_]*_/g, function(s) { // Underline
             return '<span class="underline">' + s.slice(1, -1).trim() + '</span>';
         });
         return str;
