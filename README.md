@@ -14,7 +14,6 @@ Make sure to turn print margins off or set them to a minimal. Instructions on ho
 - Count pages, scènes, dialogs, locations and words
 
 # Not yet implemented
-- Display dual dialog
 - Display lyrics
 - Handle forced page breaks by user intend
 - Handle parenthicals

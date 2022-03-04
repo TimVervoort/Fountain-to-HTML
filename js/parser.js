@@ -99,7 +99,7 @@ class FountainParser {
                 var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0].replace('^', '').trim());
                 var dialog = parts.slice(1);
-                this.view.addBlock('dialog', dialog.map(l => this.emphasis(l)).join('<br />').trim());
+                this.view.addBlock('dual-dialog', dialog.map(l => this.emphasis(l)).join('<br />').trim());
                 this.addCharacter(parts[0].replace('^', '').trim());
             }
 

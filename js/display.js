@@ -1,5 +1,5 @@
 class DisplayScript {
-    
+
     /**
      * Returns true if a page is full or false otherwise.
      * @param {integer} pageNr : The page number to be checked.
@@ -26,13 +26,13 @@ class DisplayScript {
      * @param {string} type : The type of the block.
      * @param {string} content : The plain text content of the block.
      */
-    addBlock(type, content = '', focused = false) {           
+    addBlock(type, content = '', focused = false) {
 
         if (type == 'fade-in') { content = 'FADE IN'; }
         if (type == 'fade-out') { content = 'FADE OUT'; }
         if (type == 'end') { content = 'THE END'; }
         if (type == 'begin-montage') { content = 'BEGIN MONTAGE.'; }
-        if (type == 'end-montage') { content = 'END MONTAGE.'; }   
+        if (type == 'end-montage') { content = 'END MONTAGE.'; }
 
         if (type == 'heading') {
             var sceneCount = document.getElementsByClassName('heading').length;
@@ -45,33 +45,44 @@ class DisplayScript {
             this.createTitlePage('Untitled Screenplay', 'Written by', 'You', '', ''); // There must be an empty page
         }
 
-        var lastPage = pages[pages.length - 1];         
+        var lastPage = pages[pages.length - 1];
 
-        if (focused) {
+        if (type == 'dual-dialog') {
+            var lastCue = lastPage.lastChild.innerHTML;
+            lastPage.removeChild(lastPage.lastChild);
+            var dialog = lastPage.lastChild.innerHTML;
+            lastPage.removeChild(lastPage.lastChild);
+            var cue = lastPage.lastChild.innerHTML;
+            lastPage.removeChild(lastPage.lastChild);
+            lastPage.innerHTML += '<div class="dual-dialog"><div><div>' + cue + '</div><div>' + dialog + '</div></div>'
+                                + '<div><div>' + lastCue + '</div><div>' + content + '</div></div></div>';
+        }
+
+        else if (focused) {
             lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
         }
         else {
             lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
-        }           
+        }
 
         // Check if newly added block makes the page to long, if it does, split the page
-        if (this.isPageFull(lastPage.getAttribute('id'))) {          
+        if (this.isPageFull(lastPage.getAttribute('id'))) {
 
-            // Remove from the old page           
+            // Remove from the old page
             lastPage.removeChild(lastPage.lastChild);
-            this.newPage();            
+            this.newPage();
 
             // If the is a dialog text, than take the corresponding character cue with it
             if (type == 'dialogue' || type == 'dialog') {
                 lastPage = document.getElementById('scenario').children[document.getElementById('scenario').children.length - 2];
-                var cue = lastPage.lastChild.textContent;
+                var cue = lastPage.lastChild.innerHTML;
                 lastPage.removeChild(lastPage.lastChild);
-                lastPage = document.getElementById('scenario').lastChild; // The newly generated page 
+                lastPage = document.getElementById('scenario').lastChild; // The newly generated page
                 lastPage.innerHTML += '<span class="character-cue">'+cue+'</span>';
-            }         
+            }
 
             // Add to the new page
-            lastPage = document.getElementById('scenario').lastChild; // The newly generated page        
+            lastPage = document.getElementById('scenario').lastChild; // The newly generated page
             if (focused) {
                 lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
             }
@@ -79,7 +90,7 @@ class DisplayScript {
                 lastPage.innerHTML += '<span class="'+type+'">'+content+'</span>';
             }
 
-        }  
+        }
 
     }
 
