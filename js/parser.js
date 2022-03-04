@@ -95,18 +95,20 @@ class FountainParser {
             }
 
             else if (this.isDualDialog(line)) {
-                var parts = line.split('\n');
-                if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
+                if (line[0] == '@') { line = line.slice(1); } // Remove leading @
+                var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0].replace('^', '').trim());
-                this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
+                var dialog = parts.slice(1);
+                this.view.addBlock('dialog', dialog.map(l => this.emphasis(l)).join('<br />').trim());
                 this.addCharacter(parts[0].replace('^', '').trim());
             }
 
             else if (this.isDialog(line)) {
-                var parts = line.split('\n');
-                if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
+                if (line[0] == '@') { line = line.slice(1); } // Remove leading @
+                var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0]);
-                this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
+                var dialog = parts.slice(1);
+                this.view.addBlock('dialog', dialog.map(l => this.emphasis(l)).join('<br />').trim());
                 this.addCharacter(parts[0]);
             }
 
@@ -117,7 +119,8 @@ class FountainParser {
 
             else {
                 if (line[0] == '!') { line = line.slice(1); } // Remove leading !
-                this.view.addBlock('action', this.emphasis(line));
+                var action = this.clearNote(line).split(/\n/g);
+                this.view.addBlock('action', action.map(l => (l.trim() == '') ? '' : this.emphasis(l)).join('<br />'));
             }
 
         }
@@ -193,10 +196,6 @@ class FountainParser {
     }
 
     emphasis(str) {
-        str = str.replace(/\[\[[^\]]*\]\]/g, function(s) { // Notes
-            console.log('Found user note: ' + s.slice(2, -2));
-            return '';
-        });
         str = str.replace(/\*\*\*[^\*]*\*\*\*/g, function(s) { // Bold & italics
             return '<span class="bold italic">' + s.slice(3, -3).trim() + '</span>';
         });
@@ -223,6 +222,14 @@ class FountainParser {
     clearBoneyard(str) {
         str = str.toString().replace(/\/\*.*?\*\//sg, '');
         return str;
+    }
+
+    clearNote(str) {
+      str = str.replace(/\[\[[^\]]*\]\]\s*\n?/g, function(s) { // Notes
+        console.log('Found user note: ' + s.slice(2, -2));
+        return '';
+      });
+      return str;
     }
 
     isTitlePage(str) {
