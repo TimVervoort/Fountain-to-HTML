@@ -51,6 +51,7 @@ span {
     margin-left: calc(1.5 * 2.54cm);
     margin-right: calc(1 * 2.54cm);
     width: calc(6 * 2.54cm);
+    text-transform: uppercase;
 }
 .action {
     margin-left: calc(1.5 * 2.54cm);
@@ -68,6 +69,23 @@ span {
     width: calc(3.3 * 2.54cm);
     margin-bottom: 0;
     text-transform: uppercase;
+}
+div.dual-dialog {
+    margin-left: calc(1.5 * 2.54cm);
+    margin-right: calc(1 * 2.54cm);
+    width: calc(6 * 2.54cm);
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 17px;
+}
+div.dual-dialog > div:first-child {
+    flex: 1.2;
+}
+div.dual-dialog > div:last-child {
+    flex: 1;
+}
+div.dual-dialog > div > div:first-child {
+    text-align: center;
 }
 .parenthetical {
     margin-left: calc(3.6 * 2.54cm);
@@ -158,7 +176,7 @@ span {
     text-align: center;
 }
 .underline {
-    display: contents;
+    display: inline;
     text-decoration: underline;
 }
 .italic {

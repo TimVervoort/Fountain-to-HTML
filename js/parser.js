@@ -24,14 +24,14 @@ class FountainParser {
                 var key = parts[i].split(':')[0].trim().toLowerCase().replace(' ', '_');
                 lastKey = key; // Store new key
                 if (!obj[lastKey]) { obj[lastKey] = ''; } // Create key
-                
+
                 // Value on next line
                 if (parts[i].split(':').length > 1) {
                     var val = parts[i].split(':')[1].trim();
                     if (val.length <= 1) { continue; }
                     if (obj[lastKey].length > 0) { obj[lastKey] += '<br />'; }
                     obj[lastKey] += val;
-                }   
+                }
 
             }
 
@@ -57,7 +57,7 @@ class FountainParser {
     }
 
     addCharacter(name) {
-        name = name.replace('CONT\'D', '');
+        name = name.replace(/\s*\([^)]*\)$/, '');
         this.addToArrayUnique(this.characters, name);
     }
 
@@ -69,43 +69,46 @@ class FountainParser {
 
         this.characters = []; // Clear characters
 
-        var lines = this.contents.value.split(/\r?\n\r?\n/); // Get content
+        var lines = this.clearBoneyard(this.contents.value).split(/\r?\n\r?\n/); // Get content
         if (lines.length <= 1) { return; }
 
         for (var i = 0; i < lines.length; i++) {
-            
+
             var line = this.clearStr(lines[i]); // Clear string from unnecessary spaces and tabs
             if (line.length == 0) { continue; } // Skip empty lines
-        
+            if (this.isSection(line) || this.isSynopsis(line)) { continue; } // Skip Section and Synopsis
+
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
-                this.view.addBlock('heading', line);
-                var location = line.split('-')[1].trim();
+                this.view.addBlock('heading', this.escape(line));
+                var location = line.split('-')[0].trim();
                 this.addLocation(location);
             }
-        
+
             else if (this.isTitlePage(line)) {
                 var o = this.parseTitlePage(line);
                 this.view.createTitlePage(o['title'], o['credit'], o['author'], o['draft_date'], o['contact']);
             }
 
             else if (this.isCentered(line)) {
-                this.view.addBlock('center', this.emphasis(this.centerText(line)));
+                this.view.addBlock('center', this.emphasis(this.centerText(this.escape(line))));
             }
 
             else if (this.isDualDialog(line)) {
-                var parts = line.split('\n');
-                if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
+                if (line[0] == '@') { line = line.slice(1); } // Remove leading @
+                var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0].replace('^', '').trim());
-                this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
+                var dialog = parts.slice(1);
+                this.view.addBlock('dual-dialog', dialog.map(l => this.emphasis(this.escape(l))).join('<br />').trim());
                 this.addCharacter(parts[0].replace('^', '').trim());
             }
-        
+
             else if (this.isDialog(line)) {
-                var parts = line.split('\n');
-                if (parts[0][0] == '@') { parts[0] = parts[0].slice(1); } // Remove leading @
+                if (line[0] == '@') { line = line.slice(1); } // Remove leading @
+                var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0]);
-                this.view.addBlock('dialog', this.emphasis(parts.slice(1).join('<br />').trim()));
+                var dialog = parts.slice(1);
+                this.view.addBlock('dialog', dialog.map(l => this.emphasis(this.escape(l))).join('<br />').trim());
                 this.addCharacter(parts[0]);
             }
 
@@ -113,12 +116,13 @@ class FountainParser {
                 if (line[0] == '>') { line = line.slice(1).trim(); }
                 this.view.addBlock('transition', line);
             }
-        
+
             else {
                 if (line[0] == '!') { line = line.slice(1); } // Remove leading !
-                this.view.addBlock('action', this.emphasis(line));
+                var action = this.clearNote(line).split(/\n/g);
+                this.view.addBlock('action', action.map(l => (l.trim() == '') ? '' : this.emphasis(this.escape(l))).join('<br />'));
             }
-        
+
         }
 
         updateStats();
@@ -167,6 +171,14 @@ class FountainParser {
         return (str[0] == '>' && str.slice(-1) != '<') || (str.toUpperCase() == str && str.slice(-3) == 'TO:'); // In uppercase and ending with 'TO:' or beginning with '>'
     }
 
+    isSynopsis(str) {
+        return str[0] == '=';
+    }
+
+    isSection(str) {
+        return str[0] == '#';
+    }
+
     isLyric(str) {
         return str[0] == '~';
     }
@@ -177,38 +189,56 @@ class FountainParser {
     }
 
     centerText(str) {
-        str = str.replace(/>[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_='"!?@#$%^&\*()/\\]*</g, function(s) { // Center
+        str = str.replace(/>[^\<]*</g, function(s) { // Center
             return '<span>' + s.slice(1, -1).trim() + '</span>';
         });
         return str;
     }
 
     emphasis(str) {
-        str = str.replace(/\[\[[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&\*()/\\]*\]\]/g, function(s) { // Notes
-            console.log('Found user note: ' + s.slice(2, -2));
-            return '';
-        });     
-        str = str.replace(/\*\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*\*/g, function(s) { // Bold & italics
+        str = str.replace(/\*\*\*[^\*]*\*\*\*/g, function(s) { // Bold & italics
             return '<span class="bold italic">' + s.slice(3, -3).trim() + '</span>';
         });
-        str = str.replace(/\*\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*\*/g, function(s) { // Bold
+        str = str.replace(/\*\*[^\*]*\*\*/g, function(s) { // Bold
             return '<span class="bold">' + s.slice(2, -2).trim() + '</span>';
         });
-        str = str.replace(/\*[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-_=<>'"!?@#$%^&()/\\]*\*/g, function(s) { // Italic
+        str = str.replace(/\*[^\*]*\*/g, function(s) { // Italic
             return '<span class="italic">' + s.slice(1, -1).trim() + '</span>';
         });
-        str = str.replace(/_[a-zA-Z0-9áàÁÀéèÉÈêëÊË\s,.\-=<>'"!?@#$%^&\*()/\\]*_/g, function(s) { // Underline
+        str = str.replace(/_[^\_]*_/g, function(s) { // Underline
             return '<span class="underline">' + s.slice(1, -1).trim() + '</span>';
         });
         return str;
     }
 
     clearStr(str) {
-        str = str.toString().replace('/\r/g', ''); // Remove newlines
+        str = str.toString().replace(/\r/g, ''); // Remove newlines
         str = str.toString().replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Convert tabs to 4 spaces
         str = str.toString().replace(/ +(?= )/g,''); // Remove double spaces
         str = str.toString().trim(); // Remove leading and trailing spaces
         return str;
+    }
+
+    escape(htmlStr) {
+       return htmlStr.replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#39;");
+
+    }
+
+    clearBoneyard(str) {
+        str = str.toString().replace(/\/\*.*?\*\//sg, '');
+        return str;
+    }
+
+    clearNote(str) {
+      str = str.replace(/\[\[[^\]]*\]\]\s*\n?/g, function(s) { // Notes
+        console.log('Found user note: ' + s.slice(2, -2));
+        return '';
+      });
+      return str;
     }
 
     isTitlePage(str) {
