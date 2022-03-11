@@ -80,7 +80,7 @@ class FountainParser {
 
             if (this.isHeading(line)) {
                 if (line[0] == '.') { line = line.slice(1); } // Remove leading dot
-                this.view.addBlock('heading', line);
+                this.view.addBlock('heading', this.escape(line));
                 var location = line.split('-')[0].trim();
                 this.addLocation(location);
             }
@@ -91,7 +91,7 @@ class FountainParser {
             }
 
             else if (this.isCentered(line)) {
-                this.view.addBlock('center', this.emphasis(this.centerText(line)));
+                this.view.addBlock('center', this.emphasis(this.centerText(this.escape(line))));
             }
 
             else if (this.isDualDialog(line)) {
@@ -99,7 +99,7 @@ class FountainParser {
                 var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0].replace('^', '').trim());
                 var dialog = parts.slice(1);
-                this.view.addBlock('dual-dialog', dialog.map(l => this.emphasis(l)).join('<br />').trim());
+                this.view.addBlock('dual-dialog', dialog.map(l => this.emphasis(this.escape(l))).join('<br />').trim());
                 this.addCharacter(parts[0].replace('^', '').trim());
             }
 
@@ -108,7 +108,7 @@ class FountainParser {
                 var parts = this.clearNote(line).split('\n');
                 this.view.addBlock('character-cue', parts[0]);
                 var dialog = parts.slice(1);
-                this.view.addBlock('dialog', dialog.map(l => this.emphasis(l)).join('<br />').trim());
+                this.view.addBlock('dialog', dialog.map(l => this.emphasis(this.escape(l))).join('<br />').trim());
                 this.addCharacter(parts[0]);
             }
 
@@ -120,7 +120,7 @@ class FountainParser {
             else {
                 if (line[0] == '!') { line = line.slice(1); } // Remove leading !
                 var action = this.clearNote(line).split(/\n/g);
-                this.view.addBlock('action', action.map(l => (l.trim() == '') ? '' : this.emphasis(l)).join('<br />'));
+                this.view.addBlock('action', action.map(l => (l.trim() == '') ? '' : this.emphasis(this.escape(l))).join('<br />'));
             }
 
         }
@@ -212,11 +212,20 @@ class FountainParser {
     }
 
     clearStr(str) {
-        str = str.toString().replace('/\r/g', ''); // Remove newlines
+        str = str.toString().replace(/\r/g, ''); // Remove newlines
         str = str.toString().replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Convert tabs to 4 spaces
         str = str.toString().replace(/ +(?= )/g,''); // Remove double spaces
         str = str.toString().trim(); // Remove leading and trailing spaces
         return str;
+    }
+
+    escape(htmlStr) {
+       return htmlStr.replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#39;");
+
     }
 
     clearBoneyard(str) {
